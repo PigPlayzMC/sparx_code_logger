@@ -23,5 +23,9 @@
     "web_accessible_resources": [{
         "resources": ["injected.js"],
         "matches": ["*://maths.sparx-learning.com/*"]
-    }]
+    }],
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": "icon.png"
+    }
 }
