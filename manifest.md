@@ -1,0 +1,3 @@
+# Explanation of manifest contents
+
+-

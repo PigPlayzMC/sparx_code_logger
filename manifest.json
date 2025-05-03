@@ -4,8 +4,15 @@
     "version": "0.0",
     "manifest_version": 3,
     "minimum_chrome_version": "109",
-    "action": {
-        "default_popup": "popup.html",
-        "default_icon": "icon.png"
-    }
+    "permissions": ["webRequest"],
+    "host_permissions": [
+        "*://maths.sparx-learning.com/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [{
+    "matches": ["https://maths.sparx-learning.com/*"],
+    "js": ["content.js"]
+    }]
 }

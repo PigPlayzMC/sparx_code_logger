@@ -1,0 +1,1 @@
+console.log("Sparx Maths detected - Extension active...");
