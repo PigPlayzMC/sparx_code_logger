@@ -10,4 +10,12 @@ script.onload = () => script.remove();
 // Listen for events from page context
 window.addEventListener('console-log-intercepted', (e) => {
     console.log('SBCL Interceptor:', ...e.detail);
+    const message = e.detail;
+
+    // Example: [ACT] START fd36758f-4f25-4b05-953b-8e66030f8240 2 2 undefined
+    if (message.includes(undefined)) {
+        console.log("SBCL: New question started");
+
+        
+    }
 });
