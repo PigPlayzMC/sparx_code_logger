@@ -12,3 +12,12 @@ h1 {
         Verdana,
         sans-serif;
 }
+
+button {
+    background-color: #4290f2;
+    color: white;
+    border-radius: 10px;
+    width: 120px;
+    height: 40px;
+    border: 1px;
+}
