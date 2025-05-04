@@ -5,10 +5,9 @@
       try {
         window.dispatchEvent(new CustomEvent('console-log-intercepted', { detail: args }));
       } catch (err) {
-        originalLog('Error dispatching intercepted log:', err);
+        originalLog('SBCL Interceptor Error:', err);
       }
   
       originalLog.apply(console, args);
     };
   })();
-  

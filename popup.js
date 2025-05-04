@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     element.relatedTask = 1;
 
     function changePage(evt) {
-        console.log("Task " + evt.currentTarget.relatedTask + " clicked");
+        ////console.log("Task " + evt.currentTarget.relatedTask + " clicked");
         window.location.assign("task.html");
     }
 })

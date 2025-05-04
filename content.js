@@ -1,6 +1,6 @@
 //! This only runs on Sparx Maths. Do not put extension code here!
 
-console.log("Sparx Maths detected - Extension active...");
+console.log("SBCL: Active");
 
 const script = document.createElement('script');
 script.src = chrome.runtime.getURL('injected.js'); // External file in extension
@@ -9,8 +9,5 @@ script.onload = () => script.remove();
 
 // Listen for events from page context
 window.addEventListener('console-log-intercepted', (e) => {
-    console.log('Intercepted log from page:', ...e.detail);
+    console.log('SBCL Interceptor:', ...e.detail);
 });
-
-//const path = window.location.pathname; // e.g., /task/2/item/1
-//const match = path.match(/task\/(\d+)\/item\/(\d+)/);
