@@ -1,10 +1,9 @@
-// Listen for clicks on task buttons
+// Setup
 document.addEventListener("DOMContentLoaded", () => {
     const element = document.getElementById("task1");
     element.addEventListener("click", changePage);
-    element.relatedTask = 1;
 
-    function changePage(evt) {
+    function changePage() {
         ////console.log("Task " + evt.currentTarget.relatedTask + " clicked");
         window.location.assign("task.html");
     }
