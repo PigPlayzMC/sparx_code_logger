@@ -9,13 +9,31 @@ script.onload = () => script.remove();
 
 // Listen for events from page context
 window.addEventListener('console-log-intercepted', (e) => {
-    console.log('SBCL Interceptor:', ...e.detail);
+    console.log('SBCL Interceptor:', ...e.detail); // Space char at front?
+    
     const message = e.detail;
+    ////console.log(message);
+    ////console.log("SBCL Raw Message Type:", typeof message);
 
-    // Example: [ACT] START fd36758f-4f25-4b05-953b-8e66030f8240 2 2 undefined
-    if (message.includes(undefined)) {
+    // Example of saved:
+    // [ACT] START,fd36758f-4f25-4b05-953b-8e66030f8240,2,4,
+
+    // Examples of default e.detail:
+    // [ACT] START fd36758f-4f25-4b05-953b-8e66030f8240 2 2 undefined
+    // [ACT] START fd36758f-4f25-4b05-953b-8e66030f8240 2 3 undefined
+    // [ACT] START fd36758f-4f25-4b05-953b-8e66030f8240 2 4 undefined
+    // [ACT] START fd36758f-4f25-4b05-953b-8e66030f8240 2 5 undefined
+    // [ACT] START fd36758f-4f25-4b05-953b-8e66030f8240 2 6 undefined
+    // [ACT] START fd36758f-4f25-4b05-953b-8e66030f8240 2 7 undefined
+    // [ACT] START fd36758f-4f25-4b05-953b-8e66030f8240 2 8 undefined
+    if (Array.isArray(message) && message[0] == ("[ACT] START")) {
         console.log("SBCL: New question started");
+        ////console.log("SBCL Message: " + message);
 
-        
+        const task = message[2];
+        const question = message[3]; // Int rather than char
+
+        console.log("SBCL Task: " + task);
+        console.log("SBCL Question: " + question);
     }
 });
