@@ -30,10 +30,18 @@ window.addEventListener('console-log-intercepted', (e) => {
         console.log("%cSBCL: New question started", 'color:rgb(247, 255, 129)');
         ////console.log("SBCL Message: " + message);
 
-        const task = message[2];
-        const question = message[3]; // Int rather than char
+        const active_question = [message[2], message[3]];
 
-        console.log("%cSBCL Task: " + task, 'color:rgb(247, 255, 129)');
-        console.log("%cSBCL Question: " + question, 'color:rgb(247, 255, 129)');
+        console.log("%cSBCL: Task " + active_question[0], 'color:rgb(247, 255, 129)');
+        console.log("%cSBCL: Question " + active_question[1], 'color:rgb(247, 255, 129)');
+    } else if (false == true) { //! Placeholder for if the answer has been provided
+        const id = "" + iter_value + active_question[0] + active_question[1];
+
+        const to_save = {
+            id: id,
+            task: active_question[0],
+            question: active_question[1],
+            answer: false, //! Placeholder
+        }
     }
 });
