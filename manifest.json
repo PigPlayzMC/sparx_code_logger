@@ -8,7 +8,8 @@
         "webRequest",
         "tabs",
         "scripting",
-        "storage"
+        "storage",
+        "unlimitedStorage"
     ],
     "host_permissions": [
         "*://maths.sparx-learning.com/*"
