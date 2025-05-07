@@ -1,20 +1,41 @@
 console.log("%cSBCL: Background setup begun", 'color:rgb(247, 255, 129)');
-let iter_value;
 
-try {
-    chrome.storage.local.get("iterator", (result) => {
-        console.log("%cSBCL: Iterator " + result[1], 'color:rgb(247, 255, 129)');
-        iter_value = result[1];
-    });
-} catch {
-    const iterator = {
-        id: "iterator",
-        value: 0,
+chrome.storage.local.get("iterator", function(result) {
+    let iter_value = result.iterator;
+
+    function clear() {
+        // Clears all chrome.storage.local contents for the extension
+        chrome.storage.local.clear();
+        iter_value = undefined;
     }
 
-    chrome.storage.local.set({ [iterator.id]: iterator }, () => {
-        console.warn("SBCL: Iterator not found. This is expected behaviour for initial setup or indicates a fault in local storage.");
-    });
+    chrome.management.getSelf(function(extensionInfo) {
+        let install = extensionInfo.installType;
 
-    iter_value = 0;
-}
+        if (install === 'development') {
+            console.warn("SBCL: Development mode active"); // Shouldn't be error
+            console.log("%cSBCL: Clearing local storage...", 'color:rgb(247, 255, 129)');
+            clear(); // Remove in production
+        } else {
+            console.log("%cSBCL: Standard install detected", 'color:rgb(247, 255, 129)');
+        }
+
+        if (typeof iter_value === 'undefined') {
+            console.warn("SBCL: Iterator undefined");
+            console.log("%cSBCL: Initiating setup...", 'color:rgb(247, 255, 129)');
+
+            const iterator = {
+                id: "iterator",
+                value: 0,
+            }
+        
+            chrome.storage.local.set({ [iterator.id]: iterator }, () => {
+                console.warn("SBCL: Iterator not found. This is expected behaviour for initial setup or indicates a fault in local storage.");
+            });
+        
+            iter_value = 0;
+        } else {
+            console.log("%cSBCL: Current iterator = " + iter_value, 'color:rgb(247, 255, 129)');
+        }
+    });
+});
