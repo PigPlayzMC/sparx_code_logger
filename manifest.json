@@ -9,7 +9,8 @@
         "tabs",
         "scripting",
         "storage",
-        "unlimitedStorage"
+        "unlimitedStorage",
+        "activeTab"
     ],
     "host_permissions": [
         "*://maths.sparx-learning.com/*"
@@ -23,7 +24,7 @@
         "run_at": "document_start"
     }],
     "web_accessible_resources": [{
-        "resources": ["injected.js"],
+        "resources": ["intercept_console_log.js", "intercept_post_response.js"],
         "matches": ["*://maths.sparx-learning.com/*"]
     }],
     "action": {
