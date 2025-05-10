@@ -12,8 +12,8 @@
     XMLHttpRequest.prototype.send = function () {
         this.addEventListener('load', function () {
             if (this._method === 'POST') {
-                console.log('SBCL: Intercepted POST Response:', this.responseText);
-                // Process or modify the response here if necessary
+                handle_text(this.responseText);
+                ////console.log('SBCL: Intercepted POST Response:', this.responseText);
             }
         });
         return originalXhrSend.apply(this, arguments);
@@ -30,10 +30,14 @@
         if (init?.method === 'POST') {
             const clonedResponse = response.clone(); // Clone the response to avoid consuming it
             clonedResponse.text().then((text) => {
-                console.log('SBCL: Intercepted POST Response:', text);
+                handle_text(text);
                 // Process or modify the response here if necessary
             });
         }
         return response; // Return the original response
     };
 })();
+
+function handle_text(text) {
+    console.log('SBCL: Intercepted POST Response:' + text);
+}
