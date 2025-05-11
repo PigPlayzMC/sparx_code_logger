@@ -39,7 +39,26 @@
 })();
 
 function handle_text(text) {
-    console.log('SBCL: Intercepted POST Response:' + text);
+    let response_is_correct_answer;
+
+    ////console.warn(text[8] + text[9] + text[10] + text[11] + text[12] + text[13] + text[14]);
+    try{
+        if (text[9] + text[10] + text[11] + text[12] + text[13] + text[14] + text[15] == "SUCCESS") {
+            console.log("%cSBCL: Correct answer detected", 'color:rgb(247, 255, 129)');
+            
+            response_is_correct_answer = true;
+
+            console.log('SBCL: Intercepted POST Response:' + text);
+        } else {
+            response_is_correct_answer = false;
+        }
+    } catch {
+        response_is_correct_answer = false;
+    }
+
+    if (response_is_correct_answer == true) {
+        // Find answer
+    }
 }
 
 // Examples of responses minus most unknown chars;
