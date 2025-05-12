@@ -58,6 +58,10 @@ function handle_text(text) {
 
     if (response_is_correct_answer == true) {
         // Find answer
+
+        const answer_regex = /(?<=<choice>)[A-z0-9\-$&;.]*(?=<\/choice>)|(?<=<slot>)[A-z0-9\-$&;.]*(?=<\/slot>)|(?<=<number>)[A-z0-9\-$&;.]*(?=<\/number>)/g
+
+        //TODO use RegEx
     }
 }
 
@@ -68,25 +72,31 @@ function handle_text(text) {
 // Independent learning may be identified from use of the word 'revision'
 
 //* Single draggable choice (Independent learning)
+//*<choice>
 // VV This seems to be the important line so will be the only line showcased in later examples VV
 // QSUCCESS2D<steps><answer><part><choice>Dublin</choice></part></answer></steps>8
 // $84e34af1-0989-4c18-9865-02580d5afc14"Ordering negative numbers*revision08@PXbCONTENTS_GENERATEDr? *@?C@CFT@QV"@$84e34af1-0989-4c18-9865-02580d5afc14
 //  Introduce"NORMAL08@Z?@?CFT@QV@C@b{}xB$84e34af1-0989-4c18-9865-02580d5afc14 (JQuestion 2x�
 
 //* Multiple draggable choices (Independent learning)
+//*<slot>
 // SUCCESS2�<steps><answer><part><slot>$-770$</slot><slot>$-77$</slot><slot>$-17$</slot><slot>$7$</slot><slot>$70$</slot><slot>$700$</slot></part></answer></steps>8
 
 //* Single clickable choice (Independent learning)
+//*<choice>
 // SUCCESS2C<steps><answer><part><choice>$700$</choice></part></answer></steps>8
 
 //* Multiple clickable choices (Independent learning)
+//*<slot>
 // SUCCESS2�<steps><answer><part><text>A) $\phantom{-}2$</text><slot>$&gt;$</slot><text>$-6$</text></part><part><text>B) $-7$</text><slot>$&lt;$</slot><text>$-3$</text></part><part><text>C) $-5$</text><slot>$&gt;$</slot><text>$-8$</text></part></answer></steps>8#
 // gt appears to equal >
 // ls appears to equal <
 
 //* Single numerical choice (Independent learning)
+//*<number>
 // SUCCESS2B<steps><answer><part><number>-1.3</number></part></answer></steps>8
 
 //* Multiple numerical choices *This also features a 'I have written an explanation' box* (Homework)
+//*<number>
 // SUCCESS2�<steps><answer><part><text>a) $f=$</text><number>-3</number></part><part><text>$g=$</text><number>2</number></part><part><text>b) I</text><slot>have</slot><text>written an explanation</text></part></answer></steps>8
 
