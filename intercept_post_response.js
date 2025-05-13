@@ -60,8 +60,10 @@ function handle_text(text) {
         // Find answer
 
         const answer_regex = /(?<=<choice>)[A-z0-9\-$&;.]*(?=<\/choice>)|(?<=<slot>)[A-z0-9\-$&;.]*(?=<\/slot>)|(?<=<number>)[A-z0-9\-$&;.]*(?=<\/number>)/g
+        let answers = [];
+        answers.push(answer_regex.exec(text));
 
-        //TODO use RegEx
+        console.log(answers);
     }
 }
 

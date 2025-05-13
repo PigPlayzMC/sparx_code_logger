@@ -25,7 +25,7 @@ window.addEventListener('console-log-intercepted', (e) => {
     const message = e.detail;
 
     ////console.log(message[0]);
-    if (message[0] !== "%cSBCL: Intercepted POST Response:") { // Ignores logs from the post response interceptor
+    if (!/SBCL/.test(message[0])) { // Ignores logs from the post response interceptor
         console.log('SBCL Interceptor:', ...e.detail); // Cannot be coloured
         
         
