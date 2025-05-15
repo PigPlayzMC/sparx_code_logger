@@ -53,6 +53,7 @@ function handle_text(text) {
             response_is_correct_answer = false;
         }
     } catch {
+        // Irrelevant response, disregard
         response_is_correct_answer = false;
     }
 
@@ -60,13 +61,17 @@ function handle_text(text) {
         // Selects for any valid answers in the text
         const answer_regex = /(?<=<choice>)[A-Za-z0-9\s\-$&;.]*(?=<\/choice>)|(?<=<slot>)[A-Za-z0-9\s\-$&;.]*(?=<\/slot>)|(?<=<number>)[A-Za-z0-9\s\-$&;.]*(?=<\/number>)/g;
         const answers = [...text.matchAll(answer_regex)];
+        let final_answers = [];
 
         if (answers.length > 0) {
             answers.forEach((match, idx) => {
                 let answer = match[0];
                 answer = answer.replace(/^\$+|\$+$/g, '');
                 console.log(`%cSBCL: Answer ${idx + 1}: ` + answer, 'color:rgb(247, 255, 129)');
+                final_answers.push(answer);
             });
+
+            //TODO Send the file
         } else {
             console.error("%cSBCL: No answers found in response.", 'color:rgb(247, 255, 129)');
         }

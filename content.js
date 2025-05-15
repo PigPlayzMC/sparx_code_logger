@@ -58,22 +58,26 @@ window.addEventListener('console-log-intercepted', (e) => {
                 const iter_value = iter.iterator?.value ?? 0;
                 const id = "" + iter_value + active_question[0] + active_question[1]; // EG 012 not 3
 
-                const to_save = {
-                    id: id,
-                    task: active_question[0],
-                    question: active_question[1],
-                    answer: false, //! Placeholder
+                try {
+                    const to_save = {
+                        id: id,
+                        task: active_question[0],
+                        question: active_question[1],
+                        answer: final_answers, //TODO How to get these to this file???
+                    }
+
+                    console.log(to_save);
+
+                    chrome.storage.local.set({ [to_save.id]: to_save }, () => {
+                        console.log("%cSBCL: Logging question", 'color:rgb(247, 255, 129)');
+                    });
+
+                    chrome.storage.local.get(to_save.id, function(result) {
+                        console.log(result);
+                    });
+                } catch {
+                    console.error("Failed to log answers");
                 }
-
-                console.log(to_save);
-
-                chrome.storage.local.set({ [to_save.id]: to_save }, () => {
-                    console.log("%cSBCL: Logging question", 'color:rgb(247, 255, 129)');
-                });
-
-                chrome.storage.local.get(to_save.id, function(result) {
-                    console.log(result);
-                });
             });
         }
     }
