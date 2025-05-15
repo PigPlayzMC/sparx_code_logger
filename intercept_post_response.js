@@ -71,9 +71,13 @@ function handle_text(text) {
                 final_answers.push(answer);
             });
 
-            //TODO Send the file
+            // Share answers with content.js
+            window.dispatchEvent(new CustomEvent('sbcl-answers-found', {
+                detail: { final_answers }
+            }));
+            
         } else {
-            console.error("%cSBCL: No answers found in response.", 'color:rgb(247, 255, 129)');
+            console.error("SBCL: No answers found in response");
         }
     }
 }

@@ -44,6 +44,13 @@ window.addEventListener('console-log-intercepted', (e) => {
         // [ACT] START fd36758f-4f25-4b05-953b-8e66030f8240 2 7 undefined
         // [ACT] START fd36758f-4f25-4b05-953b-8e66030f8240 2 8 undefined
         ////console.log("SBCL Message: " + message);
+
+        let latest_final_answers = [];
+
+        window.addEventListener('sbcl-answers-found', (e) => {
+            latest_final_answers = e.detail.final_answers;
+        });
+
         if (Array.isArray(message) && message[0] == ("[ACT] START")) {
             console.log("%cSBCL: New question started", 'color:rgb(247, 255, 129)');
             ////console.log("SBCL Message: " + message);
@@ -63,7 +70,7 @@ window.addEventListener('console-log-intercepted', (e) => {
                         id: id,
                         task: active_question[0],
                         question: active_question[1],
-                        answer: final_answers, //TODO How to get these to this file???
+                        answer: latest_final_answers,
                     }
 
                     console.log(to_save);
@@ -76,7 +83,7 @@ window.addEventListener('console-log-intercepted', (e) => {
                         console.log(result);
                     });
                 } catch {
-                    console.error("Failed to log answers");
+                    console.error("SBCL: Failed to log answers");
                 }
             });
         }
