@@ -1,13 +1,23 @@
 console.log("%cSBCL: Background setup begun", 'color:rgb(247, 255, 129)');
 
+function clear() {
+    // Clears all chrome.storage.local contents for the extension
+    chrome.storage.local.clear();
+    iter_value = undefined;
+}
+
+function list(devMode) {
+    // List all items in local storage
+    // Debug only
+    if (devMode) {
+
+    } else {
+        console.error("Error listing: No permissions");
+    }
+}
+
 chrome.storage.local.get("iterator", function(result) {
     let iter_value = result.iterator;
-
-    function clear() {
-        // Clears all chrome.storage.local contents for the extension
-        chrome.storage.local.clear();
-        iter_value = undefined;
-    }
 
     chrome.management.getSelf(function(extensionInfo) {
         let install = extensionInfo.installType;

@@ -48,7 +48,7 @@ function handle_text(text) {
             
             response_is_correct_answer = true;
 
-            console.log('SBCL: Intercepted POST Response:' + text);
+            console.log('SBCL: Intercepted POST Response: ' + text);
         } else {
             response_is_correct_answer = false;
         }
@@ -57,13 +57,19 @@ function handle_text(text) {
     }
 
     if (response_is_correct_answer == true) {
-        // Find answer
+        // Selects for any valid answers in the text
+        const answer_regex = /(?<=<choice>)[A-Za-z0-9\s\-$&;.]*(?=<\/choice>)|(?<=<slot>)[A-Za-z0-9\s\-$&;.]*(?=<\/slot>)|(?<=<number>)[A-Za-z0-9\s\-$&;.]*(?=<\/number>)/g;
+        const answers = [...text.matchAll(answer_regex)];
 
-        const answer_regex = /(?<=<choice>)[A-z0-9\-$&;.]*(?=<\/choice>)|(?<=<slot>)[A-z0-9\-$&;.]*(?=<\/slot>)|(?<=<number>)[A-z0-9\-$&;.]*(?=<\/number>)/g
-        let answers = [];
-        answers.push(answer_regex.exec(text));
-
-        console.log(answers);
+        if (answers.length > 0) {
+            answers.forEach((match, idx) => {
+                let answer = match[0];
+                answer = answer.replace(/^\$+|\$+$/g, '');
+                console.log(`%cSBCL: Answer ${idx + 1}: ` + answer, 'color:rgb(247, 255, 129)');
+            });
+        } else {
+            console.error("%cSBCL: No answers found in response.", 'color:rgb(247, 255, 129)');
+        }
     }
 }
 
