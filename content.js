@@ -115,8 +115,18 @@ window.addEventListener('console-log-intercepted', (e) => {
 
                     console.log("%cSBCL: Code answer(s): ", 'color:rgb(247, 255, 129)');
                     if (Array.isArray(result[id]?.answer)) {
+                        let retrieved_answers = []; 
+
                         for (let ans = 0; ans < result[id].answer.length; ans++) {
                             console.log("%cSBCL: Answer " + (ans+1) + " - " + result[id].answer[ans], 'color:rgb(247, 255, 129)');
+                            retrieved_answers.push(result[id].answer[ans]);
+                        }
+
+                        // Broadcast retrieved answer for popup.js
+                        try {
+                            window.dispatchEvent(new CustomEvent('answers-retrieved', {detail: retrieved_answers}));
+                        } catch (err) {
+                            console.error("SBCL: Answer broadcast error ", err)
                         }
                     } else {
                         console.error("SBCL: No answers found for id: " + id);

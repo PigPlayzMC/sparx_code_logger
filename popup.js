@@ -7,7 +7,15 @@ document.addEventListener("DOMContentLoaded", () => {
         ////console.log("Task " + evt.currentTarget.relatedTask + " clicked");
         window.location.assign("task.html");
     }
-})
+});
+
+window.addEventListener('answers-retrieved', (e) => {
+    const retrieved_answers = e.detail;
+    const element = document.getElementById("last_bookwork_code");
+
+    element.textContent="DEBUG";
+    element.classList.remove("hidden");
+});
 
 ////document.addEventListener("DOMContentLoaded", () => {
 ////    const logBtn = document.getElementById("logBtn");
