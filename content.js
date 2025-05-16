@@ -25,7 +25,7 @@ window.addEventListener('console-log-intercepted', (e) => {
     const message = e.detail;
 
     ////console.log(message[0]);
-    if (!/SBCL/.test(message[0])) { // Ignores logs from the post response interceptor
+    if (!/SBCL:/.test(message[0])) { // Ignores logs from the post response interceptor
         console.log('SBCL Interceptor:', ...e.detail); // Cannot be coloured
         
         
@@ -89,6 +89,39 @@ window.addEventListener('console-log-intercepted', (e) => {
                 } catch {
                     console.error("SBCL: Failed to log answers");
                 }
+            });
+        } else if (Array.isArray(message) && /\[ACT\]\sWAC\sSTART/.test(message[0])) {
+            chrome.storage.local.get("iterator", function(iter) {
+                const iter_value = iter.iterator?.value ?? 0;
+                const id = "" + iter_value + message[2] + message[3];
+
+                //TODO Remove this debug block
+                const to_save = {
+                    id: "022",
+                    task: 2,
+                    question: 2,
+                    answer: ['DEBUG USE ONLY'],
+                }
+
+                chrome.storage.local.set({ [to_save.id]: to_save }, () => {
+                    console.warn("SBCL: Logging debug code. This is not intended production behaviour. Please report this message.")
+                });
+                //TODO Debug code ends
+
+                console.log("%cSBCL: Bookwork check started for id " + id, 'color:rgb(247, 255, 129)');
+
+                chrome.storage.local.get(id, function(result) {
+                    ////console.log(typeof result[id].answer);
+
+                    console.log("%cSBCL: Code answer(s): ", 'color:rgb(247, 255, 129)');
+                    if (Array.isArray(result[id]?.answer)) {
+                        for (let ans = 0; ans < result[id].answer.length; ans++) {
+                            console.log("%cSBCL: Answer " + (ans+1) + " - " + result[id].answer[ans], 'color:rgb(247, 255, 129)');
+                        }
+                    } else {
+                        console.error("SBCL: No answers found for id: " + id);
+                    }
+                });
             });
         }
     }
