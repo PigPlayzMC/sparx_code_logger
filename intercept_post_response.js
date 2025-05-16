@@ -59,7 +59,7 @@ function handle_text(text) {
 
     if (response_is_correct_answer == true) {
         // Selects for any valid answers in the text
-        const answer_regex = /(?<=<choice>)[A-Za-z0-9\s\-$&;.]*(?=<\/choice>)|(?<=<slot>)[A-Za-z0-9\s\-$&;.]*(?=<\/slot>)|(?<=<number>)[A-Za-z0-9\s\-$&;.]*(?=<\/number>)/g;
+        const answer_regex = /(?<=<choice>)[A-Za-z0-9\^\s\-$&;.]*(?=<\/choice>)|(?<=<slot>)[A-Za-z0-9\^\s\-$&;.]*(?=<\/slot>)|(?<=<number>)[A-Za-z0-9\^\s\-$&;.]*(?=<\/number>)/g;
         const answers = [...text.matchAll(answer_regex)];
         let final_answers = [];
 
