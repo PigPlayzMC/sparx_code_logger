@@ -66,22 +66,26 @@ window.addEventListener('console-log-intercepted', (e) => {
                 const id = "" + iter_value + active_question[0] + active_question[1]; // EG 012 not 3
 
                 try {
-                    const to_save = {
-                        id: id,
-                        task: active_question[0],
-                        question: active_question[1],
-                        answer: latest_final_answers,
+                    if (latest_final_answers == []) {
+                        console.error("SBCL: No answer found");
+                    } else {
+                        const to_save = {
+                            id: id,
+                            task: active_question[0],
+                            question: active_question[1],
+                            answer: latest_final_answers,
+                        }
+
+                        console.log(to_save);
+
+                        chrome.storage.local.set({ [to_save.id]: to_save }, () => {
+                            console.log("%cSBCL: Logging question", 'color:rgb(247, 255, 129)');
+                        });
+
+                        chrome.storage.local.get(to_save.id, function(result) {
+                            console.log(result);
+                        });
                     }
-
-                    console.log(to_save);
-
-                    chrome.storage.local.set({ [to_save.id]: to_save }, () => {
-                        console.log("%cSBCL: Logging question", 'color:rgb(247, 255, 129)');
-                    });
-
-                    chrome.storage.local.get(to_save.id, function(result) {
-                        console.log(result);
-                    });
                 } catch {
                     console.error("SBCL: Failed to log answers");
                 }
