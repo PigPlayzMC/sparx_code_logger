@@ -67,6 +67,7 @@ function handle_text(text) {
             answers.forEach((match, idx) => {
                 let answer = match[0];
                 answer = answer.replace(/^\$+|\$+$/g, '');
+                answer = answer.replace(/{|}/g, '')
                 console.log(`%cSBCL: Answer ${idx + 1}: ` + answer, 'color:rgb(247, 255, 129)');
                 final_answers.push(answer);
             });
