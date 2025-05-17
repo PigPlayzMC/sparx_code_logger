@@ -24,11 +24,9 @@ let active_question;
 window.addEventListener('console-log-intercepted', (e) => {
     const message = e.detail;
 
-    //TODO REMOVE THIS
-    //TODO FIX to transfer to popup.js or background.js
-    const retrieved_answers = ["DEBUG USE ONLY", "SECOND DEBUG VALUE"];
+    ////const retrieved_answers = ["DEBUG USE ONLY", "SECOND DEBUG VALUE"];
     
-    chrome.runtime.sendMessage({ type: "SEND_ANSWERS", data: retrieved_answers });
+    ////chrome.runtime.sendMessage({ type: "SEND_ANSWERS", data: retrieved_answers });
 
     ////console.log(message[0]);
     if (!/SBCL:/.test(message[0])) { // Ignores logs from the post response interceptor

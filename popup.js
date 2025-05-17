@@ -18,14 +18,12 @@ chrome.runtime.sendMessage({ type: "GET_ANSWERS" }, (response) => {
     answers = answers.replace(/[\["\]]/g, ''); // Remove [, ], and "
     answers = answers.replace(/,/g, ', '); // Spacing
 
-    // Display the array in your popup
-    document.getElementById("last_bookwork_code").textContent = answers;
-
     if (answers == "null") {
         console.log("%cSBCL: No bookwork code recently received", 'color:rgb(247, 255, 129)');
-        document.getElementById("last_bookwork_code").style.display = "none";
+        document.getElementById("last_bookwork_code").textContent = "No bookwork code recently received";
     } else {
-        document.getElementById("last_bookwork_code").style.display = "block";
+        // Display the array in your popup
+        document.getElementById("last_bookwork_code").textContent = answers;
     }
   }
 });

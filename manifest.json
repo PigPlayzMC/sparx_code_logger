@@ -29,6 +29,11 @@
     }],
     "action": {
         "default_popup": "popup.html",
-        "default_icon": "images/128_icon_inactive.png"
+        "icons": {
+            "16": "images/16_active.png",
+            "32": "images/32_active.png",
+            "48": "images/48_active.png",
+            "128": "images/128_active.png"
+        }
     }
 }
