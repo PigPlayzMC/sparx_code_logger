@@ -43,7 +43,7 @@ function handle_text(text) {
 
     ////console.warn(text[8] + text[9] + text[10] + text[11] + text[12] + text[13] + text[14]);
     try{
-        if (text[9] + text[10] + text[11] + text[12] + text[13] + text[14] + text[15] == "SUCCESS") {
+        if (/SUCCESS/g.test(text)) {
             console.log("%cSBCL: Correct answer detected", 'color:rgb(247, 255, 129)');
             
             response_is_correct_answer = true;
@@ -59,7 +59,7 @@ function handle_text(text) {
 
     if (response_is_correct_answer == true) {
         // Selects for any valid answers in the text
-        const answer_regex = /(?<=<choice>)[A-Za-z0-9\^{}\s\-$&;.]*(?=<\/choice>)|(?<=<slot>)[A-Za-z0-9\^{}\s\-$&;.]*(?=<\/slot>)|(?<=<number>)[A-Za-z0-9\^{}\s\-$&;.]*(?=<\/number>)/g;
+        const answer_regex = /(?<=<choice>)[A-Za-z0-9\^{}\s\-\+$&;.]*(?=<\/choice>)|(?<=<slot>)[A-Za-z0-9\^{}\s\-\+$&;.]*(?=<\/slot>)|(?<=<number>)[A-Za-z0-9\^{}\s\-\+$&;.]*(?=<\/number>)/g;
         const answers = [...text.matchAll(answer_regex)];
         let final_answers = [];
 
