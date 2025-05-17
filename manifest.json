@@ -19,7 +19,7 @@
         "service_worker": "background.js"
     },
     "content_scripts": [{
-        "matches": ["https://maths.sparx-learning.com/*"],
+        "matches": ["*://maths.sparx-learning.com/*"],
         "js": ["content.js"],
         "run_at": "document_start"
     }],

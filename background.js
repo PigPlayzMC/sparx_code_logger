@@ -49,3 +49,15 @@ chrome.storage.local.get("iterator", function(result) {
         }
     });
 });
+
+// Listen for messages from content scripts
+let retrieved_answers = [null,];
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "SEND_ANSWERS") {
+    retrieved_answers = message.data;
+  }
+  if (message.type === "GET_ANSWERS") {
+    sendResponse({ array: retrieved_answers });
+  }
+});

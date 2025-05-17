@@ -9,19 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-window.addEventListener('answers-retrieved', (e) => {
-    const retrieved_answers = e.detail;
-    const element = document.getElementById("last_bookwork_code");
-
-    element.textContent="DEBUG";
-    element.classList.remove("hidden");
+chrome.runtime.sendMessage({ type: "GET_ANSWERS" }, (response) => {
+  if (response && response.array) {
+    // Display the array in your popup
+    document.getElementById("last_bookwork_code").textContent = JSON.stringify(response.array);
+  }
 });
-
-////document.addEventListener("DOMContentLoaded", () => {
-////    const logBtn = document.getElementById("logBtn");
-////    if (logBtn) {
-////        logBtn.addEventListener("click", () => {
-////            console.log("Button clicked!");
-////        });
-////    }
-////});

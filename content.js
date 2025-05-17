@@ -24,6 +24,12 @@ let active_question;
 window.addEventListener('console-log-intercepted', (e) => {
     const message = e.detail;
 
+    //TODO REMOVE THIS
+    //TODO FIX to transfer to popup.js or background.js
+    const retrieved_answers = ["DEBUG USE ONLY"];
+    
+    chrome.runtime.sendMessage({ type: "SEND_ANSWERS", data: retrieved_answers });
+
     ////console.log(message[0]);
     if (!/SBCL:/.test(message[0])) { // Ignores logs from the post response interceptor
         console.log('SBCL Interceptor:', ...e.detail); // Cannot be coloured
@@ -95,18 +101,18 @@ window.addEventListener('console-log-intercepted', (e) => {
                 const iter_value = iter.iterator?.value ?? 0;
                 const id = "" + iter_value + message[2] + message[3];
 
-                //TODO Remove this debug block
-                const to_save = {
-                    id: "022",
-                    task: 2,
-                    question: 2,
-                    answer: ['DEBUG USE ONLY'],
-                }
+                /////TODO Remove this debug block
+                ////const to_save = {
+                ////    id: "022",
+                ////    task: 2,
+                ////    question: 2,
+                ////    answer: ['DEBUG USE ONLY'],
+                ////}
 
-                chrome.storage.local.set({ [to_save.id]: to_save }, () => {
-                    console.warn("SBCL: Logging debug code. This is not intended production behaviour. Please report this message.")
-                });
-                //TODO Debug code ends
+                ////chrome.storage.local.set({ [to_save.id]: to_save }, () => {
+                ////    console.warn("SBCL: Logging debug code. This is not intended production behaviour. Please report this message.")
+                ////});
+                /////TODO Debug code ends
 
                 console.log("%cSBCL: Bookwork check started for id " + id, 'color:rgb(247, 255, 129)');
 
@@ -123,11 +129,7 @@ window.addEventListener('console-log-intercepted', (e) => {
                         }
 
                         // Broadcast retrieved answer for popup.js
-                        try {
-                            window.dispatchEvent(new CustomEvent('answers-retrieved', {detail: retrieved_answers}));
-                        } catch (err) {
-                            console.error("SBCL: Answer broadcast error ", err)
-                        }
+                        chrome.runtime.sendMessage({ type: "SEND_ANSWERS", data: retrieved_answers });
                     } else {
                         console.error("SBCL: No answers found for id: " + id);
                     }
