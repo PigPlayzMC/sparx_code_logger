@@ -6,14 +6,8 @@ function clear() {
     iter_value = undefined;
 }
 
-function list(devMode) {
-    // List all items in local storage
-    // Debug only
-    if (devMode) {
-
-    } else {
-        console.error("Error listing: No permissions");
-    }
+function change_icon() {
+    //TODO change icon dynamically to indicate disabled/working/code received
 }
 
 chrome.storage.local.get("iterator", function(result) {
@@ -51,7 +45,7 @@ chrome.storage.local.get("iterator", function(result) {
 });
 
 // Listen for messages from content scripts
-let retrieved_answers = [null,];
+let retrieved_answers = [null];
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "SEND_ANSWERS") {
