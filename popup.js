@@ -1,3 +1,5 @@
+console.log("%cSBCL: popup.js running", 'color:rgb(247, 255, 129)');
+
 // Setup
 document.addEventListener("DOMContentLoaded", () => {
     const element = document.getElementById("task1");
@@ -11,10 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 chrome.runtime.sendMessage({ type: "GET_ANSWERS" }, (response) => {
   if (response && response.array) {
-    // Display the array in your popup
-    document.getElementById("last_bookwork_code").textContent = JSON.stringify(response.array);
+    let answers = JSON.stringify(response.array);
 
-    if (JSON.stringify(response.array) == "[null]") {
+    answers = answers.replace(/[\["\]]/g, ''); // Remove [, ], and "
+    answers = answers.replace(/,/g, ', '); // Spacing
+
+    // Display the array in your popup
+    document.getElementById("last_bookwork_code").textContent = answers;
+
+    if (answers == "null") {
         console.log("%cSBCL: No bookwork code recently received", 'color:rgb(247, 255, 129)');
         document.getElementById("last_bookwork_code").style.display = "none";
     } else {

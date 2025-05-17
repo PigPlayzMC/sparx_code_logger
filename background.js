@@ -7,7 +7,8 @@ function clear() {
 }
 
 function change_icon() {
-    //TODO change icon dynamically to indicate disabled/working/code received
+    //TODO Change icon dynamically to indicate disabled/working/code received
+    //TODO Make icons
 }
 
 chrome.storage.local.get("iterator", function(result) {
