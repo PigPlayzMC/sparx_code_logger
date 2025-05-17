@@ -63,6 +63,25 @@ function handle_text(text) {
         const answers = [...text.matchAll(answer_regex)];
         let final_answers = [];
 
+        let homework_type = 9; // 0 = compulsory 1 = xp boost 2 = target 9 = independent(not logged as there are no bookwork checks)
+            if (/revision/g.test(text)) {
+                // Independent learning
+                homework_type = 9; // Will not be logged
+                console.log("%cSBCL: Independent learning identified", 'color:rgb(247, 255, 129)');
+            } else if (/XP\sBoost/g.test(text)) {
+                // XP boost homework
+                homework_type = 1;
+                console.log("%cSBCL: XP boost identified", 'color:rgb(247, 255, 129)');
+            } else if (/Targets/g.test(text)) {
+                // Target homework
+                homework_type = 2;
+                console.log("%cSBCL: Target identified", 'color:rgb(247, 255, 129)');
+            } else {
+                // Compulsory homework
+                homework_type = 0;
+                console.log("%cSBCL: Compulsory identified (This may be a default value)", 'color:rgb(247, 255, 129)');
+            }
+
         if (answers.length > 0) {
             answers.forEach((match, idx) => {
                 let answer = match[0];
@@ -74,7 +93,7 @@ function handle_text(text) {
 
             // Share answers with content.js
             window.dispatchEvent(new CustomEvent('sbcl-answers-found', {
-                detail: { final_answers }
+                detail: { final_answers, homework_type }
             }));
             
         } else {

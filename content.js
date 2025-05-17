@@ -53,6 +53,7 @@ window.addEventListener('console-log-intercepted', (e) => {
 
         window.addEventListener('sbcl-answers-found', (e) => {
             latest_final_answers = e.detail.final_answers;
+            homework_type = e.detail.homework_type;
         });
 
         if (Array.isArray(message) && message[0] == ("[ACT] START")) { //* Begin question
@@ -64,50 +65,40 @@ window.addEventListener('console-log-intercepted', (e) => {
             console.log("%cSBCL: Task " + active_question[0], 'color:rgb(247, 255, 129)');
             console.log("%cSBCL: Question " + active_question[1], 'color:rgb(247, 255, 129)');
         } else if (Array.isArray(message) && message[0] == ("[ACT] question MUTATED - SUCCESS")) { //* Save question
-            let homework_type = 9; // 0 = compulsory 1 = xp boost 2 = target 9 = independent(not logged as there are no bookwork checks)
-            if (/revision/g.test(message)) {
-                // Independent learning
-                homework_type = 9; // Will not be logged
-            } else if (/XP\sBoost/g.test(message)) {
-                // XP boost homework
-                homework_type = 1;
-            } else if (/Targets/g.test(message)) {
-                // Target homework
-                homework_type = 2;
-            } else {
-                // Compulsory homework
-                homework_type = 0;
-            }
-
             ////console.log("%cSBCL: Logging question...");
             chrome.storage.local.get("iterator", function(iter) {
                 const iter_value = iter.iterator?.value ?? 0;
                 const id = "" + iter_value + active_question[0] + active_question[1] + homework_type; // EG 0120 not 3
 
-                try {
-                    if (latest_final_answers == []) {
-                        console.error("SBCL: No answer found");
-                    } else {
-                        const to_save = {
-                            id: id,
-                            task: active_question[0],
-                            question: active_question[1],
-                            answer: latest_final_answers,
+                if (homework_type !== 9) { // Save question
+                    try {
+                        if (latest_final_answers == []) {
+                            console.error("SBCL: No answer found");
+                        } else {
+                            const to_save = {
+                                id: id,
+                                task: active_question[0],
+                                question: active_question[1],
+                                answer: latest_final_answers,
+                            }
+
+                            console.log(to_save);
+
+                            chrome.storage.local.set({ [to_save.id]: to_save }, () => {
+                                console.log("%cSBCL: Logging question", 'color:rgb(247, 255, 129)');
+                            });
+
+                            chrome.storage.local.get(to_save.id, function(result) {
+                                console.log(result);
+                            });
                         }
-
-                        console.log(to_save);
-
-                        chrome.storage.local.set({ [to_save.id]: to_save }, () => {
-                            console.log("%cSBCL: Logging question", 'color:rgb(247, 255, 129)');
-                        });
-
-                        chrome.storage.local.get(to_save.id, function(result) {
-                            console.log(result);
-                        });
+                    } catch {
+                        console.error("SBCL: Failed to log answers");
                     }
-                } catch {
-                    console.error("SBCL: Failed to log answers");
+                } else {
+                    console.log("%cSBCL: Independent learning detected - Not logging, you don't get bookwork checks", 'color:rgb(247, 255, 129)');
                 }
+                
             });
         } else if (Array.isArray(message) && /\[ACT\]\sWAC\sSTART/.test(message[0])) { //* Retrieve answer to question
             chrome.storage.local.get("iterator", function(iter) {
