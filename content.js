@@ -128,6 +128,7 @@ window.addEventListener('console-log-intercepted', (e) => {
 
                         // Broadcast retrieved answer for popup.js
                         chrome.runtime.sendMessage({ type: "SEND_ANSWERS", data: retrieved_answers });
+                        chrome.browserAction.setIcon({ path: "images/128_bookwork" });
                     } else {
                         console.error("SBCL: No answers found for id: " + id);
                     }

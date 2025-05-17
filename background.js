@@ -6,16 +6,16 @@ function clear() {
     iter_value = undefined;
 }
 
-function change_icon() {
-    //TODO Change icon dynamically to indicate disabled/working/code received
-    //TODO Make icons
+function change_icon(path) {
+    chrome.browserAction.setIcon({ path: path });
 }
 
 chrome.storage.local.get("iterator", function(result) {
     let iter_value = result.iterator;
 
     chrome.management.getSelf(function(extensionInfo) {
-        let install = extensionInfo.installType;
+        let install = 'standard';
+        install = extensionInfo.installType; // Comment out for normal development
 
         if (install === 'development') {
             console.warn("SBCL: Development mode active"); // Shouldn't be error
@@ -25,7 +25,7 @@ chrome.storage.local.get("iterator", function(result) {
             console.log("%cSBCL: Standard install detected", 'color:rgb(247, 255, 129)');
         }
 
-        if (typeof iter_value === 'undefined') {
+        if (typeof iter_value === 'undefined' | iter_value == "[object Object]") {
             console.warn("SBCL: Iterator undefined");
             console.log("%cSBCL: Initiating setup...", 'color:rgb(247, 255, 129)');
 
