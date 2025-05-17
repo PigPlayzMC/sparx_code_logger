@@ -55,7 +55,7 @@ window.addEventListener('console-log-intercepted', (e) => {
             latest_final_answers = e.detail.final_answers;
         });
 
-        if (Array.isArray(message) && message[0] == ("[ACT] START")) {
+        if (Array.isArray(message) && message[0] == ("[ACT] START")) { //* Begin question
             console.log("%cSBCL: New question started", 'color:rgb(247, 255, 129)');
             ////console.log("SBCL Message: " + message);
 
@@ -63,11 +63,26 @@ window.addEventListener('console-log-intercepted', (e) => {
 
             console.log("%cSBCL: Task " + active_question[0], 'color:rgb(247, 255, 129)');
             console.log("%cSBCL: Question " + active_question[1], 'color:rgb(247, 255, 129)');
-        } else if (Array.isArray(message) && message[0] == ("[ACT] question MUTATED - SUCCESS")) { // The provided answer was correct
+        } else if (Array.isArray(message) && message[0] == ("[ACT] question MUTATED - SUCCESS")) { //* Save question
+            let homework_type = 9; // 0 = compulsory 1 = xp boost 2 = target 9 = independent(not logged as there are no bookwork checks)
+            if (/revision/g.test(message)) {
+                // Independent learning
+                homework_type = 9; // Will not be logged
+            } else if (/XP\sBoost/g.test(message)) {
+                // XP boost homework
+                homework_type = 1;
+            } else if (/Targets/g.test(message)) {
+                // Target homework
+                homework_type = 2;
+            } else {
+                // Compulsory homework
+                homework_type = 0;
+            }
+
             ////console.log("%cSBCL: Logging question...");
             chrome.storage.local.get("iterator", function(iter) {
                 const iter_value = iter.iterator?.value ?? 0;
-                const id = "" + iter_value + active_question[0] + active_question[1]; // EG 012 not 3
+                const id = "" + iter_value + active_question[0] + active_question[1] + homework_type; // EG 0120 not 3
 
                 try {
                     if (latest_final_answers == []) {
@@ -94,10 +109,10 @@ window.addEventListener('console-log-intercepted', (e) => {
                     console.error("SBCL: Failed to log answers");
                 }
             });
-        } else if (Array.isArray(message) && /\[ACT\]\sWAC\sSTART/.test(message[0])) {
+        } else if (Array.isArray(message) && /\[ACT\]\sWAC\sSTART/.test(message[0])) { //* Retrieve answer to question
             chrome.storage.local.get("iterator", function(iter) {
                 const iter_value = iter.iterator?.value ?? 0;
-                const id = "" + iter_value + message[2] + message[3];
+                const id = "" + iter_value + message[2] + message[3] + homework_type;
 
                 /////TODO Remove this debug block
                 ////const to_save = {
