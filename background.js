@@ -52,11 +52,15 @@ chrome.storage.local.get("homework_type", function(result) {
             console.warn("SBCL: No previous homework type identified");
             const type_to_save = {
                 id: "homework_type",
-                value: 0,
+                value: 8, // Never an acceptable value so clearly indicative of a fault
             }
 
             chrome.storage.local.set({ [type_to_save.id]: type_to_save }, () => {
                 console.log("%cSBCL: Saving default homework type", 'color:rgb(247, 255, 129)');
+            });
+
+            chrome.storage.local.get({ [type_to_save.id]: type_to_save}, () => {
+                console.log(type_to_save.value);
             });
         } else {
             console.log("%cSBCL: Current homework type = " + type_value, 'color:rgb(247, 255, 129)');

@@ -50,6 +50,12 @@ function find_match() { //* Runs in the event of bookwork checks. Must run sever
     return return_val
 }
 
+function getFromStorage(key) { // Avoids undefined behaviour when retrieving previous answer type
+    return new Promise((resolve) => {
+        chrome.storage.local.get(key, (result) => resolve(result));
+    });
+}
+
 // Listen for events from page context
 window.addEventListener('console-log-intercepted', (e) => {
     const message = e.detail;
@@ -145,8 +151,8 @@ window.addEventListener('console-log-intercepted', (e) => {
             chrome.storage.local.get("iterator", function(iter) {
                 const iter_value = iter.iterator?.value ?? 0;
 
-                const match = setTimeout(() => {
-                    find_match()
+                setTimeout(() => {
+                    const match = find_match();
 
                     ////while (!match[0]) {
                     ////    // This could be really bad for performance...
@@ -154,56 +160,45 @@ window.addEventListener('console-log-intercepted', (e) => {
                     ////}
 
                     let code = match; // Not sure if this can error?
+                    // ^^ This looks like "Bookwork 3F"
 
-                    const task = Array.from(code)[0];
-                    const question = code.charCodeAt(0) - 97;
+                    ////console.log(code);
+                    const task = code[code.length-2];
+                    ////console.log(task);
+                    const question = code.charCodeAt(code.length-1) - 64;
+                    ////console.log(question);
 
-                    if (last_homework_type === null) {
-                        homework_type = chrome.storage.local.get("homework_type", function(type) {
-                            const type_value = type.value?.value ?? 0;
-                            return type_value
-                        })
-                    } else {
-                        homework_type = last_homework_type;
-                    }
-
-                    ////homework_type = 0; // TODO REMOVE
-                    const id = "" + iter_value + task + question + homework_type;
-
-                    /////TODO Remove this debug block
-                    ////const to_save = {
-                    ////    id: "022",
-                    ////    task: 2,
-                    ////    question: 2,
-                    ////    answer: ['DEBUG USE ONLY'],
-                    ////}
-
-                    ////chrome.storage.local.set({ [to_save.id]: to_save }, () => {
-                    ////    console.warn("SBCL: Logging debug code. This is not intended production behaviour. Please report this message.")
-                    ////});
-                    /////TODO Debug code ends
-
-                    console.log("%cSBCL: Bookwork check started for id " + id, 'color:rgb(247, 255, 129)');
-
-                    chrome.storage.local.get(id, function(result) {
-                        ////console.log(typeof result[id].answer);
-
-                        console.log("%cSBCL: Code answer(s): ", 'color:rgb(247, 255, 129)');
-                        if (Array.isArray(result[id]?.answer)) {
-                            let retrieved_answers = []; 
-
-                            for (let ans = 0; ans < result[id].answer.length; ans++) {
-                                console.log("%cSBCL: Answer " + (ans+1) + " - " + result[id].answer[ans], 'color:rgb(247, 255, 129)');
-                                retrieved_answers.push(result[id].answer[ans]);
-                            }
-
-                            // Broadcast retrieved answer for popup.js
-                            chrome.runtime.sendMessage({ type: "SEND_ANSWERS", data: retrieved_answers });
-                            chrome.browserAction.setIcon({ path: "images/128_bookwork" });
+                    (async () => {
+                        if (last_homework_type == null || last_homework_type == undefined) {
+                            const type = await getFromStorage("homework_type");
+                            homework_type = type.homework_type?.value ?? 0;
+                            console.log("Type value: " + homework_type);
                         } else {
-                            console.error("SBCL: No answers found for id: " + id);
+                            homework_type = last_homework_type;
                         }
-                    });
+                        console.log(homework_type);
+
+                        const id = "" + iter_value + task + question + homework_type;
+                        console.log("%cSBCL: Bookwork check started for id " + id, 'color:rgb(247, 255, 129)');
+
+                        chrome.storage.local.get(id, function(result) {
+                            console.log("%cSBCL: Code answer(s): ", 'color:rgb(247, 255, 129)');
+                            if (Array.isArray(result[id]?.answer)) {
+                                let retrieved_answers = []; 
+
+                                for (let ans = 0; ans < result[id].answer.length; ans++) {
+                                    console.log("%cSBCL: Answer " + (ans+1) + " - " + result[id].answer[ans], 'color:rgb(247, 255, 129)');
+                                    retrieved_answers.push(result[id].answer[ans]);
+                                }
+
+                                // Broadcast retrieved answer for popup.js
+                                chrome.runtime.sendMessage({ type: "SEND_ANSWERS", data: retrieved_answers });
+                                chrome.browserAction.setIcon({ path: "images/128_bookwork" });
+                            } else {
+                                console.error("SBCL: No answers found for id: " + id);
+                            }
+                        });
+                    })();
                 }, 500);
             });
         }
