@@ -59,7 +59,7 @@ chrome.storage.local.get("homework_type", function(result) {
                 console.log("%cSBCL: Saving default homework type", 'color:rgb(247, 255, 129)');
             });
 
-            chrome.storage.local.get(type_to_save.id, () => {
+            chrome.storage.local.get({ [type_to_save.id]: type_to_save}, () => {
                 console.log(type_to_save.value);
             });
         } else {
@@ -76,11 +76,4 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   } else if (message.type === "GET_ANSWERS") {
     sendResponse({ array: retrieved_answers });
   }
-});
-
-// Ensures that all background setup is complete before content.js loads.
-chrome.runtime.sendMessage({ type: "SETUP_COMPLETE", data: true });
-
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    sendResponse({ data: true });
 });
