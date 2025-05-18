@@ -45,6 +45,24 @@ chrome.storage.local.get("iterator", function(result) {
     });
 });
 
+chrome.storage.local.get("homework_type", function(result) {
+    let type_value = result.homework_type;
+
+    if (typeof type_value === 'undefined' | type_value == "[object Object]") {
+            console.warn("SBCL: No previous homework type identified");
+            const type_to_save = {
+                id: "homework_type",
+                value: 0,
+            }
+
+            chrome.storage.local.set({ [type_to_save.id]: type_to_save }, () => {
+                console.log("%cSBCL: Saving default homework type", 'color:rgb(247, 255, 129)');
+            });
+        } else {
+            console.log("%cSBCL: Current homework type = " + type_value, 'color:rgb(247, 255, 129)');
+        }
+});
+
 // Listen for messages from content scripts
 let retrieved_answers = [null];
 

@@ -19,6 +19,36 @@ for (let i = 0; i < scripts_to_inject.length; i++) {
 }
 
 let active_question;
+let last_homework_type = null;
+let homework_type;
+
+function find_match() { //* Runs in the event of bookwork checks. Must run several times as document loads after this.
+    const code_regex = /\d[A-Z]{1}$/gm;
+
+    const body = document.body.innerText;
+    const lines = body.split('\n');
+
+    ////console.log(body);
+
+    let match = null;
+    let found = false;
+    for (let i = 0; i < lines.length; i++) {
+        ////console.log(lines[i]);
+
+        if (code_regex.test(lines[i])) {
+            console.log("%cSBCL: Code found: " + lines[i], 'color:rgb(247, 255, 129)');
+            match = lines[i];  
+            found = true;
+        }
+
+        if (found) {
+            break;
+        }
+    }
+    const return_val = match;
+
+    return return_val
+}
 
 // Listen for events from page context
 window.addEventListener('console-log-intercepted', (e) => {
@@ -71,6 +101,17 @@ window.addEventListener('console-log-intercepted', (e) => {
                 const id = "" + iter_value + active_question[0] + active_question[1] + homework_type; // EG 0120 not 3
 
                 if (homework_type !== 9) { // Save question
+                    last_homework_type = homework_type;
+
+                    const type_to_save = {
+                        id: "homework_type",
+                        value: last_homework_type,
+                    }
+
+                    chrome.storage.local.set({ [type_to_save.id]: type_to_save }, () => {
+                        console.log("%cSBCL: Overwriting last question type", 'color:rgb(247, 255, 129)');
+                    });
+
                     try {
                         if (latest_final_answers == []) {
                             console.error("SBCL: No answer found");
@@ -103,42 +144,67 @@ window.addEventListener('console-log-intercepted', (e) => {
         } else if (Array.isArray(message) && /\[ACT\]\sWAC\sSTART/.test(message[0])) { //* Retrieve answer to question
             chrome.storage.local.get("iterator", function(iter) {
                 const iter_value = iter.iterator?.value ?? 0;
-                const id = "" + iter_value + message[2] + message[3] + homework_type;
 
-                /////TODO Remove this debug block
-                ////const to_save = {
-                ////    id: "022",
-                ////    task: 2,
-                ////    question: 2,
-                ////    answer: ['DEBUG USE ONLY'],
-                ////}
+                const match = setTimeout(() => {
+                    find_match()
 
-                ////chrome.storage.local.set({ [to_save.id]: to_save }, () => {
-                ////    console.warn("SBCL: Logging debug code. This is not intended production behaviour. Please report this message.")
-                ////});
-                /////TODO Debug code ends
+                    ////while (!match[0]) {
+                    ////    // This could be really bad for performance...
+                    ////    match = find_match();
+                    ////}
 
-                console.log("%cSBCL: Bookwork check started for id " + id, 'color:rgb(247, 255, 129)');
+                    let code = match; // Not sure if this can error?
 
-                chrome.storage.local.get(id, function(result) {
-                    ////console.log(typeof result[id].answer);
+                    const task = Array.from(code)[0];
+                    const question = code.charCodeAt(0) - 97;
 
-                    console.log("%cSBCL: Code answer(s): ", 'color:rgb(247, 255, 129)');
-                    if (Array.isArray(result[id]?.answer)) {
-                        let retrieved_answers = []; 
-
-                        for (let ans = 0; ans < result[id].answer.length; ans++) {
-                            console.log("%cSBCL: Answer " + (ans+1) + " - " + result[id].answer[ans], 'color:rgb(247, 255, 129)');
-                            retrieved_answers.push(result[id].answer[ans]);
-                        }
-
-                        // Broadcast retrieved answer for popup.js
-                        chrome.runtime.sendMessage({ type: "SEND_ANSWERS", data: retrieved_answers });
-                        chrome.browserAction.setIcon({ path: "images/128_bookwork" });
+                    if (last_homework_type === null) {
+                        homework_type = chrome.storage.local.get("homework_type", function(type) {
+                            const type_value = type.value?.value ?? 0;
+                            return type_value
+                        })
                     } else {
-                        console.error("SBCL: No answers found for id: " + id);
+                        homework_type = last_homework_type;
                     }
-                });
+
+                    ////homework_type = 0; // TODO REMOVE
+                    const id = "" + iter_value + task + question + homework_type;
+
+                    /////TODO Remove this debug block
+                    ////const to_save = {
+                    ////    id: "022",
+                    ////    task: 2,
+                    ////    question: 2,
+                    ////    answer: ['DEBUG USE ONLY'],
+                    ////}
+
+                    ////chrome.storage.local.set({ [to_save.id]: to_save }, () => {
+                    ////    console.warn("SBCL: Logging debug code. This is not intended production behaviour. Please report this message.")
+                    ////});
+                    /////TODO Debug code ends
+
+                    console.log("%cSBCL: Bookwork check started for id " + id, 'color:rgb(247, 255, 129)');
+
+                    chrome.storage.local.get(id, function(result) {
+                        ////console.log(typeof result[id].answer);
+
+                        console.log("%cSBCL: Code answer(s): ", 'color:rgb(247, 255, 129)');
+                        if (Array.isArray(result[id]?.answer)) {
+                            let retrieved_answers = []; 
+
+                            for (let ans = 0; ans < result[id].answer.length; ans++) {
+                                console.log("%cSBCL: Answer " + (ans+1) + " - " + result[id].answer[ans], 'color:rgb(247, 255, 129)');
+                                retrieved_answers.push(result[id].answer[ans]);
+                            }
+
+                            // Broadcast retrieved answer for popup.js
+                            chrome.runtime.sendMessage({ type: "SEND_ANSWERS", data: retrieved_answers });
+                            chrome.browserAction.setIcon({ path: "images/128_bookwork" });
+                        } else {
+                            console.error("SBCL: No answers found for id: " + id);
+                        }
+                    });
+                }, 500);
             });
         }
     }
